@@ -8,16 +8,17 @@
 <body>
     <h1>Cadastrar Jogador</h1>
 
-    <form>
-        <input type="text" placeholder="Nome">
-        <input type="date" placeholder="Data de Nascimento">
-        <input type="text" placeholder="Posição">
+    <form id="formJogador">
+        <input type="text" placeholder="Nome" id="nome">
+        <input type="date" placeholder="Data de Nascimento" id="dataNasc">
+        <input type="text" placeholder="Posição" id="posicao">
         <label>Foto do Jogador</label>
-        <input type="file" accept="image/*">
+        <input type="file" id="foto" accept="image/*">
         <label>Documento do Jogador</label>
-        <input type="file" accept=".pdf,.doc,.docx">
+        <input type="file" id="documento" accept=".pdf,.doc,.docx">
 
         <button type="submit">Cadastar</button>
     </form>
+<script src="../js/jogador.js"></script>
 </body>
 </html>
