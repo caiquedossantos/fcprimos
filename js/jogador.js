@@ -15,6 +15,7 @@ function salvarJogador(){
     const foto = document.getElementById("foto").files[0];
     const documento = document.getElementById("documento").files[0];
     
+    
 
 
 const Jogador = {
