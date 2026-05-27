@@ -6,37 +6,43 @@ form.addEventListener("submit",function(event){
     event.preventDefault();
     salvarJogador();
 });
-
 function salvarJogador(){
+
     const nome = document.getElementById("nome").value;
-    const dataNasc = document.getElementById("dataNasc").value;
+    const data_nascimento = document.getElementById("data_nascimento").value;
     const posicao = document.getElementById("posicao").value;
 
     const foto = document.getElementById("foto").files[0];
-    const documento = document.getElementById("documento").files[0];
-    
-    
 
+    const formData = new FormData();
 
-const Jogador = {
-    nome: nome,
-    dataNascimento: dataNasc,
-    posicao: posicao,
-    fotoNome: foto ? foto.name : null,
-    documentoNome: documento ? documento.name : null
-};
+    formData.append("nome_jogador", nome);
+    formData.append("posicao", posicao);
+    formData.append("data_nascimento", data_nascimento);
 
-salvarNoLocalStorage(Jogador);
+    if (foto) {
+        formData.append("foto", foto);
+    }
 
-alert("Jogador Cadastrado com sucesso!")
-form.reset();
-
+    fetch("http://localhost:3000/jogadores", {
+        method: "POST",
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert("Jogador cadastrado com sucesso!");
+        form.reset();
+    })
+    .catch(error => {
+        console.error("Erro:", error);
+        alert("Erro ao cadastrar jogador");
+    });
 }
 
-function salvarNoLocalStorage(Jogador){
-    let jogadores = JSON.parse(localStorage.getItem("jogadores")) || [];
+// function salvarNoLocalStorage(Jogador){
+//     let jogadores = JSON.parse(localStorage.getItem("jogadores")) || [];
 
-    jogadores.push(Jogador);
+//     jogadores.push(Jogador);
 
-    localStorage.setItem("jogadores", JSON.stringify(jogadores));
-}
+//     localStorage.setItem("jogadores", JSON.stringify(jogadores));
+// }

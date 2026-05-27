@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Jogo</title>
+</head>
+<body>
+    <h1>Cadastro de Jogo</h1>
+
+    <form id="formJogo">
+        <!--LIGA-->
+        <label>Liga</label><br>
+        <input type="text" id="liga" placeholder="Ex: Campeonato de X3"><br><br>
+
+        <label>Data</label><br>
+        <input type="date" id="data_jogo"><br><br>
+
+        <label>Adversário</label><br>
+        <input type="text" id="adversario" placeholder="Nome do time"><br><br>
+
+        <label>Placar</label><br>
+
+        <span>Primos FC</span>
+        <input type="number"  id="gols_primos" min="0" value="0">
+
+        <span>X</span>
+
+        <input type="number" id="gols_adv" min="0" value="0">
+        <span id="nome_adversario_preview">Adversario</span>
+
+        <br><br>
+
+        <button type = "submit">Salvar Jogo</button>
+    </form>
+
+</body>
+<script src="../js/jogo.js"></script>
+
+</html>
