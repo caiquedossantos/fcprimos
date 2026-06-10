@@ -416,6 +416,180 @@ app.post("/jogos", (req, res) => {
 
 });
 
+// =========================
+// ESTATISTICAS
+// =========================
+
+app.get("/estatisticas", (req, res) => {
+
+    const sql = `  SELECT
+                       COUNT(*) AS totalJogos,
+                       SUM(
+                       CASE
+                            WHEN gols_primos > gols_adv THEN 1
+                            ELSE 0
+                       END
+                       ) AS vitorias,
+                       SUM(
+                       CASE
+                            WHEN gols_primos = gols_adv THEN 1
+                            ELSE 0
+                       END
+                       ) AS empates,
+                       SUM(
+                       CASE
+                            WHEN gols_primos < gols_adv THEN 1
+                            ELSE 0
+                       END
+                       ) AS derrotas,
+                       SUM(gols_primos) AS golsMarcados,
+                       SUM(gols_adv) AS golsSofridos
+                   FROM jogo`;
+
+    db.query(sql, (err, result) => {
+
+        if (err) {
+
+            console.error(err);
+
+            return res.status(500).json({
+                erro: "Erro ao buscar estatísticas"
+            });
+
+        }
+
+        res.json(result[0]);
+
+    });
+
+});
+
+
+app.post("/gols", (req, res) => {
+
+    const {
+        jogo_id_jogo,
+        jogador_id_jogador,
+    }= req.body;
+
+    const sql = `
+    INSERT INTO gols
+    (
+        jogo_id_jogo,
+        jogador_id_jogador
+    )
+    VALUES (?,?)
+    `;
+
+    db.query(
+        sql,
+        [
+            jogo_id_jogo,
+            jogador_id_jogador
+        ],
+        (err, result) => {
+
+            if (err) {
+
+                console.error(err);
+
+                return res.status(500).json({
+                    erro: "Erro ao cadastrar gol"
+                });
+
+            }
+
+            res.json({
+                mensagem: "Gol cadastrado com sucesso!",
+                id: result.insertId
+            });
+
+        }
+    );
+
+});
+
+
+app.post("/assistencias", (req, res) => {
+
+    const {
+        jogo_id_jogo,
+        jogador_id_jogador,
+    }= req.body;    
+
+    const sql = `
+    INSERT INTO assistencia
+    (
+        jogo_id_jogo,
+        jogador_id_jogador
+    )
+    VALUES (?,?)
+    `;
+    db.query(   
+        sql,
+        [
+            jogo_id_jogo,
+            jogador_id_jogador
+        ],
+        (err, result) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).json({
+                    erro: "Erro ao cadastrar assistência"
+                });
+            }
+            res.json({
+                mensagem: "Assistência cadastrada com sucesso!",
+                id: result.insertId
+            });
+
+        }
+    );
+
+});
+
+app.post("/cartoes", (req, res) => {
+
+    const {
+        tipo,
+        jogo_id_jogo,
+        jogador_id_jogador
+    } = req.body;
+
+    const sql = `
+    INSERT INTO cartoes
+    (
+        tipo,
+        jogo_id_jogo,
+        jogador_id_jogador
+    )
+    VALUES (?,?,?)
+    `;
+
+    db.query(
+        sql,
+        [
+            tipo,
+            jogo_id_jogo,
+            jogador_id_jogador
+        ],
+        (err, result) => {
+
+            if(err){
+                return res.status(500).json({
+                    erro: "Erro ao cadastrar cartão"
+                });
+            }
+
+            res.json({
+                mensagem: "Cartão cadastrado!"
+            });
+
+        }
+    );
+
+});
+
 
 // ======================================================
 // INICIAR SERVIDOR
