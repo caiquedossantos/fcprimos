@@ -590,6 +590,139 @@ app.post("/cartoes", (req, res) => {
 
 });
 
+app.post("/participacao", (req, res) => {
+
+    const {
+        jogo_id_jogo,
+        jogador_id_jogador,
+    } = req.body;
+
+    const sql = `
+    INSERT INTO participacao_jogo
+    (
+        jogo_id_jogo,
+        jogador_id_jogador
+    )
+    VALUES (?,?)
+    `;
+    db.query(
+        sql,
+        [ 
+            jogo_id_jogo,
+            jogador_id_jogador
+        ],
+        (err, result) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).json({   
+                    erro: "Erro ao cadastrar participação"
+                });
+            }
+            res.json({
+                mensagem: "Participação cadastrada com sucesso!",
+                id: result.insertId
+            });
+        }   
+    );
+});    
+
+
+app.get("/estatisticas-jogadores", (req, res) => {
+
+    const sql = `
+    SELECT
+        j.id_jogador,
+        j.nome_jogador,
+        j.posicao,
+
+        COUNT(DISTINCT p.id_participacao) AS jogos,
+
+        COUNT(DISTINCT g.id_gol) AS gols,
+
+        COUNT(DISTINCT a.id_assistencia) AS assistencias,
+
+        SUM(
+            CASE
+                WHEN c.tipo = 'Amarelo'
+                THEN 1
+                ELSE 0
+            END
+        ) AS amarelos,
+
+        SUM(
+            CASE
+                WHEN c.tipo = 'Vermelho'
+                THEN 1
+                ELSE 0
+            END
+        ) AS vermelhos
+
+    FROM jogador j
+
+    LEFT JOIN participacao_jogo p
+        ON p.jogador_id_jogador = j.id_jogador
+
+    LEFT JOIN gols g
+        ON g.jogador_id_jogador = j.id_jogador
+
+    LEFT JOIN assistencia a
+        ON a.jogador_id_jogador = j.id_jogador
+
+    LEFT JOIN cartoes c
+        ON c.jogador_id_jogador = j.id_jogador
+
+    GROUP BY
+        j.id_jogador,
+        j.nome_jogador,
+        j.posicao
+
+    ORDER BY gols DESC
+    `;
+
+    db.query(sql, (err, result) => {
+
+        if (err) {
+
+            console.error(err);
+
+            return res.status(500).json({
+                erro: "Erro ao buscar estatísticas"
+            });
+
+        }
+
+        res.json(result);
+
+    });
+
+});
+
+app.get("/jogos", (req, res) => {
+
+    const sql = `
+    SELECT *
+    from jogo
+    ORDER BY data_jogo DESC
+    `;
+
+    db.query(sql, (err, result) => {
+
+        if (err) {
+
+            console.error(err);
+
+            return res.status(500).json({
+                erro: "Erro ao buscar jogos"
+            });
+
+        }
+
+        res.json(result);
+
+    });
+
+});
+
 
 // ======================================================
 // INICIAR SERVIDOR

@@ -38,6 +38,7 @@ function salvarJogo(){
     const data_jogo = document.getElementById("data_jogo").value;
     const gols_primos = document.getElementById("gols_primos").value;
     const gols_adv = document.getElementById("gols_adv").value; 
+ 
 
      //  Validação simples
     if(!liga || !adversario || !data_jogo){
@@ -80,6 +81,27 @@ if (gols_adv < 0) {
         console.log("Sucesso:", data);
 
         const jogoId = data.id; // Supondo que o ID do jogo seja retornado
+
+        const jogou = document.getElementById(`jogou_${jogador.id_jogador}`).checked;
+        
+        if (jogou) {
+
+            console.log("VAI SALVAR PARTICIPAÇÃO");
+
+
+            await fetch("http://localhost:3000/participacao", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },  
+                body: JSON.stringify({
+                    jogo_id_jogo: jogoId,
+                    jogador_id_jogador: jogador.id_jogador
+                })
+            }
+        );
+        }
+
 
         console.log("PASSOU 2", jogoId);
 
